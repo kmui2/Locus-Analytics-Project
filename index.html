@@ -111,7 +111,7 @@
 				};
 				var network = new vis.Network(container, data, options);
 
-				network.on("click", function (params) {
+				network.on("selectNode", function (params) {
 					neighbourhoodHighlight(params);
 					params.event = "[original event]";
 					document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
@@ -132,6 +132,35 @@
 					console.log('hidePopup Event');
 				});
 
+				network.on('deselectNode', function(data) {
+					console.log(data.nodes.length)
+					if (data.nodes.length == 0) {
+						// let prevSelectedNodes = [];
+						// data.previousSelection.nodes.forEach((n) => {
+						// 	let node = nodes._data[n];
+						// 	node.color = '#D2E5FF';
+						// 	prevSelectedNodes.push(node);
+						// 	let connectedNodes = network.getConnectedNodes(n);
+						// 	connectedNodes.forEach((n) => {
+						// 		let node = nodes._data[n];
+						// 		node.color = '#D2E5FF';
+						// 		prevSelectedNodes.push(node);
+						// 	})
+						// })
+						
+						// nodes.update(prevSelectedNodes);
+						
+						let nodeIds = Object.keys(nodes._data);
+						let newNodeData = [];
+						nodeIds.forEach((id) => {
+							let node = nodes._data[id];
+							node.color = '#97c2fc';
+							newNodeData.push(node);
+						})
+						nodes.update(newNodeData);
+					}
+				})
+
 
 				
 		function neighbourhoodHighlight(params) {
@@ -145,11 +174,7 @@
 				
 				// mark all nodes as hard to read.
 				for (var nodeId in allNodes._data) {
-					allNodes._data[nodeId].color = 'rgba(200,200,200,0.5)';
-					if (allNodes._data[nodeId].hiddenLabel === undefined) {
-						allNodes._data[nodeId].hiddenLabel = allNodes._data[nodeId].label;
-						allNodes._data[nodeId].label = undefined;
-					}
+					allNodes._data[nodeId].color = '#D2E5FF';
 				}
 				var connectedNodes = network.getConnectedNodes(selectedNode);
 				connectedNodes.push(selectedNode);
@@ -161,20 +186,12 @@
 				// all first degree nodes get their own color and their label back
 				for (i = 0; i < connectedNodes.length; i++) {
 					allNodes._data[connectedNodes[i]].color = 'black';
-					if (allNodes._data[connectedNodes[i]].hiddenLabel !== undefined) {
-						allNodes._data[connectedNodes[i]].label = allNodes._data[connectedNodes[i]].hiddenLabel;
-						allNodes._data[connectedNodes[i]].hiddenLabel = undefined;
-					}
 				}
 			}
 			else if (highlightActive === true) {
 				// reset all nodes
 				for (var nodeId in allNodes._data) {
-					allNodes._data[nodeId].color = undefined;
-					if (allNodes._data[nodeId].hiddenLabel !== undefined) {
-						allNodes._data[nodeId].label = allNodes._data[nodeId].hiddenLabel;
-						allNodes._data[nodeId].hiddenLabel = undefined;
-					}
+					allNodes._data[nodeId].color = '#D2E5FF';
 				}
 				highlightActive = false
 			}
