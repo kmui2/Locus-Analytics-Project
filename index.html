@@ -93,19 +93,19 @@
 							}
 						},
 						size: 16,
-						color: {
-							highlight: '#000000'
-						}
+						// color: {
+						// 	highlight: '#000000'
+						// }
 					},
 					edges: {
 						length: 100,
-						color: {
-							color: '#848484',
-							highlight: '#000000',
-							hover: '#000000',
-							inherit: 'from',
-							opacity: 1.0
-						},
+						// color: {
+						// 	color: '#848484',
+						// 	highlight: '#000000',
+						// 	hover: '#000000',
+						// 	inherit: 'from',
+						// 	opacity: 1.0
+						// },
 					},
 					physics: false
 				};
@@ -152,29 +152,31 @@
 					}
 				}
 				var connectedNodes = network.getConnectedNodes(selectedNode);
-				connectedNodes.push(selectedNode);
-				var allConnectedNodes = [];
-
-				
-				console.log(connectedNodes);
+				var connectedEdges = network.getConnectedEdges(selectedNode);
+				let unconnectedEdgesIds = Object.keys(edges._data).filter((edgeId) => {
+					return !(connectedEdges.includes(edgeId))
+				});
+				let unconnectedEdgesData = {};
+				unconnectedEdgesIds.forEach((edgeId) => {
+					unconnectedEdgesData[edgeId] = edges._data[edgeId];
+				})
+				let unconnectedEdges = new vis.DataSet(unconnectedEdgesData);
 
 				// all first degree nodes get their own color and their label back
 				for (i = 0; i < connectedNodes.length; i++) {
 					allNodes._data[connectedNodes[i]].color = 'black';
-					if (allNodes._data[connectedNodes[i]].hiddenLabel !== undefined) {
-						allNodes._data[connectedNodes[i]].label = allNodes._data[connectedNodes[i]].hiddenLabel;
-						allNodes._data[connectedNodes[i]].hiddenLabel = undefined;
-					}
+				}
+				for (i = 0; i < unconnectedEdges.length; i++) {
+					edges._data[unconnectedEdges[i]].color = 'pink';
 				}
 			}
 			else if (highlightActive === true) {
 				// reset all nodes
 				for (var nodeId in allNodes._data) {
 					allNodes._data[nodeId].color = undefined;
-					if (allNodes._data[nodeId].hiddenLabel !== undefined) {
-						allNodes._data[nodeId].label = allNodes._data[nodeId].hiddenLabel;
-						allNodes._data[nodeId].hiddenLabel = undefined;
-					}
+				}
+				for (let edgeId in edges._data) {
+					edges._data[edgeId].color = undefined;
 				}
 				highlightActive = false
 			}
@@ -186,8 +188,17 @@
 					updateArray.push(allNodes._data[nodeId]);
 				}
 			}
+			let updateEdgesArray = [];
+			for (edgeId in edges._data) {
+				if (edges._data.hasOwnProperty(edgeId)) {
+					updateEdgesArray.push(edges._data[edgeId]);
+				}
+			}
 			console.log(updateArray)
+			console.log(updateEdgesArray)
 			allNodes.update(updateArray);
+			edges.update(updateEdgesArray);
+			
 		}
 			})
 		})
