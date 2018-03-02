@@ -135,20 +135,6 @@
 				network.on('deselectNode', function(data) {
 					console.log(data.nodes.length)
 					if (data.nodes.length == 0) {
-						// let prevSelectedNodes = [];
-						// data.previousSelection.nodes.forEach((n) => {
-						// 	let node = nodes._data[n];
-						// 	node.color = '#D2E5FF';
-						// 	prevSelectedNodes.push(node);
-						// 	let connectedNodes = network.getConnectedNodes(n);
-						// 	connectedNodes.forEach((n) => {
-						// 		let node = nodes._data[n];
-						// 		node.color = '#D2E5FF';
-						// 		prevSelectedNodes.push(node);
-						// 	})
-						// })
-						
-						// nodes.update(prevSelectedNodes);
 						
 						let nodeIds = Object.keys(nodes._data);
 						let newNodeData = [];
