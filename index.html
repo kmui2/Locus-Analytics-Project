@@ -62,7 +62,12 @@
 						},
 						//label: e.Label,
 						font: { align: 'top' },
-						color:{color: chroma.random().hex()},
+						color:{
+							
+							color: e.Label == 'AP' ? 'pink' //chroma.random().hex(),
+								: e.Label == 'Subject' ? 'blue'
+								: e.Label == 'Input' ? 'green' : 'grey'
+						},
 						value: 5
 					});
 				});
